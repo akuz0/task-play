@@ -6,39 +6,108 @@ info:
 servers:
   - url: 'https'
 paths:
-  /v1/user:
-    get:
+  /v1/playlist/play:
+    post:
       tags:
-        - access
-      operationId: getAuthUser
-      summary: Информация об аутентифицированном пользователе.
-      description: Информация об аутентифицированном пользователе.
+        - playlist
+      operationId: playList
+      summary: Начать воспроизведение.
+      description: Метод начинает воспроизводить первый трек из плейлиста.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Play'
       responses:
         '200':
-          description: Успешный ответ.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserProfile"
-
+          description: Успешное воспроизведение
+        '400':
+          description: Ошибка воспроизведения
+  /v1/playlist/pause:
+    post:
+      tags:
+        - playlist
+      operationId: pauseList
+      summary: Приостановить воспроизведение.
+      description: Метод приостанавливает воспроизведение плейлиста.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pause'
+      responses:
+        '200':
+          description: Успешное воспроизведение
+        '400':
+          description: Ошибка воспроизведения
+  /v1/playlist/addSong:
+    post:
+      tags:
+        - playlist
+      operationId: addSong
+      summary: Добавление трека.
+      description: Метод добавляет трек в плейлист.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddSong'
+      responses:
+        '200':
+          description: Успешное добавление
+        '400':
+          description: Ошибка добавления
+  /v1/playlist/next:
+    get:
+      tags:
+        - playlist
+      operationId: nextSong
+      summary: Следующий трек.
+      description: Метод воспроизводит следующий трек в плейлисте.
+      responses:
+        '200':
+          description: Успешное переключение
+        '400':
+          description: Ошибка переключения
+  /v1/playlist/prev:
+    get:
+      tags:
+        - playlist
+      operationId: prevSong
+      summary: Предыдущий трек.
+      description: Метод воспроизводит предыдущий трек в плейлисте.
+      responses:
+        '200':
+          description: Успешное переключение
+        '400':
+          description: Ошибка переключения
 components:
   schemas:
-    UserProfile:
+    Play:
       type: object
       required:
         - id
-        - login
-        - avatarUrl
       properties:
         id:
-          type: string
-          description: Идентификатор пользователя
-          format: uuid
-        login:
-          type: string
-          description: Логин пользователя в системе.
-          example: aaryaz10
-        avatarUrl:
-          type: string
-          description: URL по которому можно получить аватар пользователя.
-          example: https://i.pravatar.cc/150
+          type: number
+          description: Идентификатор плейлиста
+    AddSong:
+      type: object
+      required:
+        - id
+        - playListId
+      properties:
+        id:
+          type: number
+          description: Идентификатор трека
+        playListId:
+          type: number
+          description: Идентификатор плейлиста
+    Pause:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: number
+          description: Идентификатор плейлиста
