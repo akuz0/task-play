@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/jackc/pgx/v4/pgxpool"
+	playlist2 "homework/internal/service/playlist"
+	"homework/internal/storage/postgresql/playlist"
 	"log"
 	"net/http"
 	"os"
@@ -35,7 +38,19 @@ func main() {
 		return
 	}
 
-	apiServer := v1.NewAPIServer()
+	connectionString := cfg.DB.Postgresql
+
+	// setup database connection
+	db, err := setupDatabase(connectionString)
+	if err != nil {
+		return
+	}
+
+	storagePlayList := playlist.NewStorage(db)
+
+	playListService := playlist2.PlayListService(storagePlayList)
+
+	apiServer := v1.NewAPIServer(playListService)
 
 	err = startHTTPServer(ctx, cfg, apiServer)
 	if err != nil {
@@ -77,4 +92,17 @@ func startHTTPServer(
 	})
 
 	return group.Wait()
+}
+
+func setupDatabase(connString string) (*pgxpool.Pool, error) {
+	ctx := context.Background()
+	// Подключение к БД. Функция возвращает объект БД.
+	db, err := pgxpool.Connect(ctx, connString)
+	if err != nil {
+		log.Fatalf("Unable to connect to database: %v\n", err)
+	}
+	// Не забываем очищать ресурсы.
+	//defer db.Close()
+
+	return db, nil
 }

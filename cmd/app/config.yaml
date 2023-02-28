@@ -1,2 +1,4 @@
 addr: :8081
 base_path: /api
+db:
+  postgresql: "postgres://root:pass@localhost:5434/digdb?sslmode=disable"

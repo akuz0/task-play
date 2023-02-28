@@ -17,6 +17,8 @@ type Response struct {
 	StatusCode int    `json:"statusCode"`
 }
 
-func NewAPIServer() specs.ServerInterface {
-	return &apiServer{}
+func NewAPIServer(playListService playlist.PlayListService) specs.ServerInterface {
+	return &apiServer{
+		playListService: playListService,
+	}
 }
