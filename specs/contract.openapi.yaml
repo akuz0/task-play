@@ -89,7 +89,7 @@ components:
         - id
       properties:
         id:
-          type: number
+          type: integer
           description: Идентификатор плейлиста
     AddSong:
       type: object
@@ -98,10 +98,10 @@ components:
         - playListId
       properties:
         id:
-          type: number
+          type: integer
           description: Идентификатор трека
         playListId:
-          type: number
+          type: integer
           description: Идентификатор плейлиста
     Pause:
       type: object
@@ -109,5 +109,5 @@ components:
         - id
       properties:
         id:
-          type: number
+          type: integer
           description: Идентификатор плейлиста
