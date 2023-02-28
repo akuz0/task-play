@@ -7,7 +7,7 @@ import (
 
 type PlayListService interface {
 	GetPlayListByID(ctx context.Context, playListId int) (playListDomain.Play, error)
-	CreatePlayList(ctx context.Context, playlist playListDomain.Play) (playListDomain.Play, error)
+	CreatePlayList(ctx context.Context, playListId int) (playListDomain.Play, error)
 	StartPlayList(ctx context.Context, playListId int) (playListDomain.Play, error)
 	NextSong(ctx context.Context)
 	PrevSong(ctx context.Context)
@@ -15,6 +15,7 @@ type PlayListService interface {
 }
 
 type PlayListStorage interface {
+	CreatePlayList(ctx context.Context, playListId int) (playListDomain.Play, error)
 }
 
 type service struct {
@@ -26,13 +27,15 @@ func (s service) GetPlayListByID(ctx context.Context, playListId int) (playListD
 	panic("implement me")
 }
 
-func (s service) CreatePlayList(ctx context.Context, playlist playListDomain.Play) (playListDomain.Play, error) {
-	//TODO implement me
-	panic("implement me")
+func (s service) CreatePlayList(ctx context.Context, playListId int) (playListDomain.Play, error) {
+	playlist, err := s.playListStorage.CreatePlayList(ctx, playListId)
+	if err != nil {
+		return playListDomain.Play{}, err
+	}
+	return playlist, err
 }
 
 func (s service) StartPlayList(ctx context.Context, playListId int) (playListDomain.Play, error) {
-	//TODO implement me
 	panic("implement me")
 }
 

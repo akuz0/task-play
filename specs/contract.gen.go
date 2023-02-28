@@ -34,6 +34,9 @@ type Play struct {
 // AddSongJSONRequestBody defines body for AddSong for application/json ContentType.
 type AddSongJSONRequestBody = AddSong
 
+// CreatePlayListJSONRequestBody defines body for CreatePlayList for application/json ContentType.
+type CreatePlayListJSONRequestBody = Play
+
 // PauseListJSONRequestBody defines body for PauseList for application/json ContentType.
 type PauseListJSONRequestBody = Pause
 
@@ -45,6 +48,9 @@ type ServerInterface interface {
 	// Добавление трека.
 	// (POST /v1/playlist/addSong)
 	AddSong(w http.ResponseWriter, r *http.Request)
+	// Создать плейлист.
+	// (POST /v1/playlist/create)
+	CreatePlayList(w http.ResponseWriter, r *http.Request)
 	// Следующий трек.
 	// (GET /v1/playlist/next)
 	NextSong(w http.ResponseWriter, r *http.Request)
@@ -74,6 +80,21 @@ func (siw *ServerInterfaceWrapper) AddSong(w http.ResponseWriter, r *http.Reques
 
 	var handler http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddSong(w, r)
+	})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// CreatePlayList operation middleware
+func (siw *ServerInterfaceWrapper) CreatePlayList(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreatePlayList(w, r)
 	})
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -258,6 +279,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/v1/playlist/addSong", wrapper.AddSong)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/v1/playlist/create", wrapper.CreatePlayList)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/v1/playlist/next", wrapper.NextSong)

@@ -11,17 +11,17 @@ func (a apiServer) AddSong(w http.ResponseWriter, r *http.Request) {
 	var p playlist.AddSong
 	err := decoder.Decode(&p)
 	if err != nil {
-		json.NewEncoder(w).Encode(&Response{"Error", 500})
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
 	}
 	res, err := a.playListService.AddSong(r.Context(), p.Id, p.PlayListId)
 	if err != nil {
-		json.NewEncoder(w).Encode(&Response{"Error", 500})
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
 	}
 	errJson := json.NewEncoder(w).Encode(res)
 	if errJson != nil {
-		json.NewEncoder(w).Encode(&Response{"Error", 500})
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
 	}
 }
@@ -40,17 +40,37 @@ func (a apiServer) PlayList(w http.ResponseWriter, r *http.Request) {
 	var p playlist.Play
 	err := decoder.Decode(&p)
 	if err != nil {
-		json.NewEncoder(w).Encode(&Response{"Error", 500})
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
 	}
 	res, err := a.playListService.StartPlayList(r.Context(), p.Id)
 	if err != nil {
-		json.NewEncoder(w).Encode(&Response{"Error", 500})
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
 	}
 	errJson := json.NewEncoder(w).Encode(res)
 	if errJson != nil {
-		json.NewEncoder(w).Encode(&Response{"Error", 500})
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
+}
+
+func (a apiServer) CreatePlayList(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var p playlist.Play
+	err := decoder.Decode(&p)
+	if err != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
+	res, err := a.playListService.CreatePlayList(r.Context(), p.Id)
+	if err != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
+	errJson := json.NewEncoder(w).Encode(res)
+	if errJson != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
 	}
 }

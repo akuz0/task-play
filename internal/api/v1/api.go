@@ -12,7 +12,7 @@ type apiServer struct {
 	playListService playlist.PlayListService
 }
 
-type Response struct {
+type ResponseError struct {
 	Status     string `json:"status"`
 	StatusCode int    `json:"statusCode"`
 }

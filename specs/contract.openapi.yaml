@@ -23,6 +23,23 @@ paths:
           description: Успешное воспроизведение
         '400':
           description: Ошибка воспроизведения
+  /v1/playlist/create:
+    post:
+      tags:
+        - playlist
+      operationId: CreatePlayList
+      summary: Создать плейлист.
+      description: Метод создает пустой плейлист.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Play'
+      responses:
+        '200':
+          description: Успешное воспроизведение
+        '400':
+          description: Ошибка воспроизведения
   /v1/playlist/pause:
     post:
       tags:

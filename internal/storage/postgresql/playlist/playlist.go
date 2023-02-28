@@ -4,11 +4,12 @@ import (
 	"context"
 	"github.com/jackc/pgx/v4/pgxpool"
 	playListDomain "homework/internal/domain/playlist"
+	"log"
 )
 
 type PlayListStorage interface {
 	GetPlayListByID(ctx context.Context, playListId int) (playListDomain.Play, error)
-	CreatePlayList(ctx context.Context, playlist playListDomain.Play) (playListDomain.Play, error)
+	CreatePlayList(ctx context.Context, playListId int) (playListDomain.Play, error)
 	StartPlayList(ctx context.Context, playListId int) (playListDomain.Play, error)
 	NextSong(ctx context.Context)
 	PrevSong(ctx context.Context)
@@ -24,9 +25,19 @@ func (p playListStorage) GetPlayListByID(ctx context.Context, playListId int) (p
 	panic("implement me")
 }
 
-func (p playListStorage) CreatePlayList(ctx context.Context, playlist playListDomain.Play) (playListDomain.Play, error) {
-	//TODO implement me
-	panic("implement me")
+func (p playListStorage) CreatePlayList(ctx context.Context, playListId int) (playListDomain.Play, error) {
+	row, err := p.DB.Query(ctx, "INSERT INTO playlist VALUES ($1, null) RETURNING id", playListId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer row.Close()
+	var playList playListDomain.Play
+	//err = row.Scan(&playListId)
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	playList.Id = playListId
+	return playList, err
 }
 
 func (p playListStorage) StartPlayList(ctx context.Context, playListId int) (playListDomain.Play, error) {
