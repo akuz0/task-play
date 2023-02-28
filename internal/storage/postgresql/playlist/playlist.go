@@ -26,7 +26,8 @@ func (p playListStorage) GetPlayListByID(ctx context.Context, playListId int) (p
 }
 
 func (p playListStorage) CreatePlayList(ctx context.Context, playListId int) (playListDomain.Play, error) {
-	row, err := p.DB.Query(ctx, "INSERT INTO playlist VALUES ($1, null) RETURNING id", playListId)
+	//todo: add const
+	row, err := p.DB.Query(ctx, "INSERT INTO playlist VALUES ($1, null, 'stop') RETURNING id", playListId)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,8 +42,34 @@ func (p playListStorage) CreatePlayList(ctx context.Context, playListId int) (pl
 }
 
 func (p playListStorage) StartPlayList(ctx context.Context, playListId int) (playListDomain.Play, error) {
-	//TODO implement me
-	panic("implement me")
+
+	row, err := p.DB.Query(ctx, "select id from playlist WHERE status = 'play'")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer row.Close()
+	var id int
+	for row.Next() {
+		err = row.Scan(&id)
+		if err != nil {
+			log.Fatal(err)
+		}
+		row, err = p.DB.Query(ctx, "UPDATE playlist SET status = 'stop' where id = $1", id)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer row.Close()
+	}
+
+	row, err = p.DB.Query(ctx, "UPDATE playlist SET status = 'play' where id = $1", playListId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer row.Close()
+	var playList playListDomain.Play
+	playList.Id = playListId
+	return playList, err
 }
 
 func (p playListStorage) NextSong(ctx context.Context) {
