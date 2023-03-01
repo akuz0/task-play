@@ -14,7 +14,7 @@ func (a apiServer) AddSong(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
 	}
-	res, err := a.playListService.AddSong(r.Context(), p.Id, p.PlayListId)
+	res, err := a.playListService.AddSong(r.Context(), p.Id, p.SongName, 0)
 	if err != nil {
 		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
@@ -27,8 +27,13 @@ func (a apiServer) AddSong(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a apiServer) NextSong(w http.ResponseWriter, r *http.Request) {
+	errorText := "Not have next song"
 	res, err := a.playListService.NextSong(r.Context())
 	if err != nil {
+		if err.Error() == errorText {
+			json.NewEncoder(w).Encode(&playlist.Response{400, errorText})
+			return
+		}
 		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
 	}
@@ -87,6 +92,10 @@ func (a apiServer) CreatePlayList(w http.ResponseWriter, r *http.Request) {
 func (a apiServer) PrevSong(w http.ResponseWriter, r *http.Request) {
 	res, err := a.playListService.PrevSong(r.Context())
 	if err != nil {
+		if err.Error() == "Not have prev song" {
+			json.NewEncoder(w).Encode(&playlist.Response{400, "Not have prev song"})
+			return
+		}
 		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
 	}

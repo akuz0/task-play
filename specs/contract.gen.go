@@ -17,6 +17,9 @@ type AddSong struct {
 
 	// PlayListId Идентификатор плейлиста
 	PlayListId int `json:"playListId"`
+
+	// SongName Имя трека
+	SongName string `json:"songName"`
 }
 
 // Pause defines model for Pause.
