@@ -112,15 +112,15 @@ components:
       type: object
       required:
         - id
-        - playListId
         - songName
+        - status
       properties:
         id:
           type: integer
           description: Идентификатор трека
-        playListId:
-          type: integer
-          description: Идентификатор плейлиста
+        status:
+          type: string
+          description: Статус трека
         songName:
           type: string
           description: Имя трека

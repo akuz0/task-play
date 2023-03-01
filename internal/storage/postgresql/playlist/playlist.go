@@ -15,11 +15,36 @@ type PlayListStorage interface {
 	StartPlayList(ctx context.Context, playListId int) (playListDomain.Play, error)
 	NextSong(ctx context.Context) (playListDomain.Play, error)
 	PrevSong(ctx context.Context) (playListDomain.Play, error)
+	PauseSong(ctx context.Context, playListId int) (playListDomain.Pause, error)
 	AddSong(ctx context.Context, songId int, songName string, playListId int) (playListDomain.AddSong, error)
 }
 
 type playListStorage struct {
 	DB *pgxpool.Pool
+}
+
+func (p playListStorage) PauseSong(ctx context.Context, playListId int) (playListDomain.Pause, error) {
+	row, err := p.DB.Query(ctx, "select id from playlist WHERE status = 'play'")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer row.Close()
+	var id int
+	for row.Next() {
+		err = row.Scan(&id)
+		if err != nil {
+			log.Fatal(err)
+		}
+		row, err = p.DB.Query(ctx, "UPDATE playlist SET status = 'pause' where id = $1", id)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer row.Close()
+	}
+	var playList playListDomain.Pause
+	playList.Id = id
+	return playList, err
 }
 
 func (p playListStorage) GetPlayListByID(ctx context.Context, playListId int) (playListDomain.Play, error) {
@@ -100,7 +125,7 @@ func (p playListStorage) NextSong(ctx context.Context) (playListDomain.Play, err
 	err = p.DB.QueryRow(ctx, "select id from playlist WHERE id = $1", id).Scan(&id)
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return playList, errors.New("Not have prev song")
+			return playList, errors.New("Not have next song")
 		}
 		log.Fatal(err)
 	}

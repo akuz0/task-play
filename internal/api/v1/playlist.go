@@ -45,8 +45,23 @@ func (a apiServer) NextSong(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a apiServer) PauseList(w http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
+	decoder := json.NewDecoder(r.Body)
+	var p playlist.Play
+	err := decoder.Decode(&p)
+	if err != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
+	res, err := a.playListService.PauseSong(r.Context(), p.Id)
+	if err != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
+	errJson := json.NewEncoder(w).Encode(res)
+	if errJson != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
 }
 
 func (a apiServer) PlayList(w http.ResponseWriter, r *http.Request) {

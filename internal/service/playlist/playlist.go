@@ -11,6 +11,7 @@ type PlayListService interface {
 	StartPlayList(ctx context.Context, playListId int) (playListDomain.Play, error)
 	NextSong(ctx context.Context) (playListDomain.Play, error)
 	PrevSong(ctx context.Context) (playListDomain.Play, error)
+	PauseSong(ctx context.Context, playListId int) (playListDomain.Pause, error)
 	AddSong(ctx context.Context, songId int, songName string, playListId int) (playListDomain.AddSong, error)
 }
 
@@ -19,11 +20,20 @@ type PlayListStorage interface {
 	StartPlayList(ctx context.Context, playListId int) (playListDomain.Play, error)
 	NextSong(ctx context.Context) (playListDomain.Play, error)
 	PrevSong(ctx context.Context) (playListDomain.Play, error)
+	PauseSong(ctx context.Context, playListId int) (playListDomain.Pause, error)
 	AddSong(ctx context.Context, songId int, songName string, playListId int) (playListDomain.AddSong, error)
 }
 
 type service struct {
 	playListStorage PlayListStorage
+}
+
+func (s service) PauseSong(ctx context.Context, id int) (playListDomain.Pause, error) {
+	playlist, err := s.playListStorage.PauseSong(ctx, id)
+	if err != nil {
+		return playListDomain.Pause{}, err
+	}
+	return playlist, err
 }
 
 func (s service) GetPlayListByID(ctx context.Context, playListId int) (playListDomain.Play, error) {
