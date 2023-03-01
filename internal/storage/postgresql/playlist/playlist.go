@@ -11,8 +11,8 @@ type PlayListStorage interface {
 	GetPlayListByID(ctx context.Context, playListId int) (playListDomain.Play, error)
 	CreatePlayList(ctx context.Context, playListId int) (playListDomain.Play, error)
 	StartPlayList(ctx context.Context, playListId int) (playListDomain.Play, error)
-	NextSong(ctx context.Context)
-	PrevSong(ctx context.Context)
+	NextSong(ctx context.Context) (playListDomain.Play, error)
+	PrevSong(ctx context.Context) (playListDomain.Play, error)
 	AddSong(ctx context.Context, songId int, playListId int) (playListDomain.AddSong, error)
 }
 
@@ -26,19 +26,20 @@ func (p playListStorage) GetPlayListByID(ctx context.Context, playListId int) (p
 }
 
 func (p playListStorage) CreatePlayList(ctx context.Context, playListId int) (playListDomain.Play, error) {
-	//todo: add const
-	row, err := p.DB.Query(ctx, "INSERT INTO playlist VALUES ($1, null, 'stop') RETURNING id", playListId)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer row.Close()
-	var playList playListDomain.Play
-	//err = row.Scan(&playListId)
+	////todo: add const
+	//row, err := p.DB.Query(ctx, "INSERT INTO playlist VALUES ($1, null, 'stop') RETURNING id", playListId)
 	//if err != nil {
-	//	log.Println(err)
+	//	log.Fatal(err)
 	//}
-	playList.Id = playListId
-	return playList, err
+	//defer row.Close()
+	//var playList playListDomain.Play
+	////err = row.Scan(&playListId)
+	////if err != nil {
+	////	log.Println(err)
+	////}
+	//playList.Id = playListId
+	//return playList, err
+	panic("implement me")
 }
 
 func (p playListStorage) StartPlayList(ctx context.Context, playListId int) (playListDomain.Play, error) {
@@ -72,19 +73,80 @@ func (p playListStorage) StartPlayList(ctx context.Context, playListId int) (pla
 	return playList, err
 }
 
-func (p playListStorage) NextSong(ctx context.Context) {
-	//TODO implement me
-	panic("implement me")
+func (p playListStorage) NextSong(ctx context.Context) (playListDomain.Play, error) {
+	row, err := p.DB.Query(ctx, "select id from playlist WHERE status = 'play'")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer row.Close()
+	var id int
+	for row.Next() {
+		err = row.Scan(&id)
+		if err != nil {
+			log.Fatal(err)
+		}
+		row, err = p.DB.Query(ctx, "UPDATE playlist SET status = 'stop' where id = $1", id)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer row.Close()
+	}
+
+	row, err = p.DB.Query(ctx, "UPDATE playlist SET status = 'play' where id = $1", id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer row.Close()
+	var playList playListDomain.Play
+	playList.Id = id
+	return playList, err
 }
 
-func (p playListStorage) PrevSong(ctx context.Context) {
-	//TODO implement me
-	panic("implement me")
+func (p playListStorage) PrevSong(ctx context.Context) (playListDomain.Play, error) {
+	row, err := p.DB.Query(ctx, "select id from playlist WHERE status = 'play'")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer row.Close()
+	var id int
+	for row.Next() {
+		err = row.Scan(&id)
+		if err != nil {
+			log.Fatal(err)
+		}
+		row, err = p.DB.Query(ctx, "UPDATE playlist SET status = 'stop' where id = $1", id)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer row.Close()
+	}
+
+	row, err = p.DB.Query(ctx, "UPDATE playlist SET status = 'play' where id = $1", id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer row.Close()
+	var playList playListDomain.Play
+	playList.Id = id
+	return playList, err
 }
 
 func (p playListStorage) AddSong(ctx context.Context, songId int, playListId int) (playListDomain.AddSong, error) {
-	//TODO implement me
-	panic("implement me")
+	//todo: add const
+	row, err := p.DB.Query(ctx, "INSERT INTO playlist VALUES ($1, null, 'stop') RETURNING id", songId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer row.Close()
+	var playList playListDomain.AddSong
+	//err = row.Scan(&playListId)
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	playList.Id = playListId
+	return playList, err
 }
 
 func NewStorage(DB *pgxpool.Pool) PlayListStorage {

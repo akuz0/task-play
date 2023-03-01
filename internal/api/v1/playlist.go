@@ -27,7 +27,16 @@ func (a apiServer) AddSong(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a apiServer) NextSong(w http.ResponseWriter, r *http.Request) {
-	a.playListService.NextSong(r.Context())
+	res, err := a.playListService.NextSong(r.Context())
+	if err != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
+	errJson := json.NewEncoder(w).Encode(res)
+	if errJson != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
 }
 
 func (a apiServer) PauseList(w http.ResponseWriter, r *http.Request) {
@@ -76,5 +85,14 @@ func (a apiServer) CreatePlayList(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a apiServer) PrevSong(w http.ResponseWriter, r *http.Request) {
-	a.playListService.PrevSong(r.Context())
+	res, err := a.playListService.PrevSong(r.Context())
+	if err != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
+	errJson := json.NewEncoder(w).Encode(res)
+	if errJson != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
 }
