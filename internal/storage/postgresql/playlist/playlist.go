@@ -95,12 +95,23 @@ func (p playListStorage) NextSong(ctx context.Context) (playListDomain.Play, err
 		defer row.Close()
 	}
 
+	var playList playListDomain.Play
+	id = id + 1
+	err = p.DB.QueryRow(ctx, "select id from playlist WHERE id = $1", id).Scan(&id)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return playList, errors.New("Not have prev song")
+		}
+		log.Fatal(err)
+	}
+
 	row, err = p.DB.Query(ctx, "UPDATE playlist SET status = 'play' where id = $1", id)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer row.Close()
-	var playList playListDomain.Play
+
 	playList.Id = id
 	return playList, err
 }
@@ -127,7 +138,7 @@ func (p playListStorage) PrevSong(ctx context.Context) (playListDomain.Play, err
 
 	var playList playListDomain.Play
 	id = id - 1
-	err = p.DB.QueryRow(ctx, "select id from playlist WHERE id = $1", id-1).Scan(&id)
+	err = p.DB.QueryRow(ctx, "select id from playlist WHERE id = $1", id).Scan(&id)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return playList, errors.New("Not have prev song")
