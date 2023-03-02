@@ -39,7 +39,6 @@ func (p *MPPlayer) Next(status chan<- int) string {
 }
 
 func (p *MPPlayer) Play(id string, name string, duration string, ctx context.Context, status chan int) {
-	//state := Running
 	if id != p.musicId {
 		i, err := strconv.Atoi(duration)
 		if err != nil {
@@ -60,18 +59,10 @@ func (p *MPPlayer) Play(id string, name string, duration string, ctx context.Con
 				fmt.Printf("Worker %d: Running\n", 1)
 			case Paused:
 				fmt.Printf("Worker %d: Paused\n", 1)
-				//p.isPlaying = true
-				//p.stat = 1
 				return
 			}
 
 		default:
-			//stat := <-status
-			//if state == Paused {
-			//	p.isPlaying = true
-			//	p.stat = 1
-			//	return
-			//}
 			time.Sleep(10 * time.Second)
 			fmt.Println(". ", p.progress)
 			inc(&p.mux, &p.progress)
@@ -94,6 +85,5 @@ func inc(mux *sync.Mutex, n *int) {
 
 	// После того, как мьютекс заблокирован,
 	// выполняем изменение.
-	//*n += 10
 	*n = *n - 1
 }
