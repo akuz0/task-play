@@ -10,3 +10,8 @@
 Вводная по проетку:
 Конфиг файл лежит по пути: 
  > cmd/app/config.yaml
+
+
+Пример работы:
+![example](https://s9.gifyu.com/images/ezgif.com-video-to-gife2f310a8ab1f320f.gif)
+
