@@ -8,7 +8,6 @@ import (
 	"homework/lib/model"
 	"homework/lib/mp"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -29,9 +28,9 @@ func handleLibCommands(commands []string) {
 		if len(commands) == 4 {
 
 			musicMananger.Add(&model.MusicEntry{
-				Id:       strconv.Itoa(id),
+				Id:       id,
 				Name:     commands[2],
-				Duration: commands[3],
+				Duration: 2,
 			})
 			id++
 		} else {
@@ -59,10 +58,7 @@ func handlePlay(commands []string, ctx context.Context, status chan int) {
 			fmt.Println("Трек", commands[1], "не найден")
 			return
 		}
-		numberRes, err := strconv.Atoi(e.Id)
-		if err != nil {
-			return
-		}
+		numberRes := e.Id
 		number = numberRes
 		mp.Play(e, ctx, status)
 

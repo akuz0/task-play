@@ -22,6 +22,9 @@ type Pause struct {
 type Play struct {
 	// Id Идентификатор плейлиста
 	Id int `json:"id"`
+
+	// Name Имя трека
+	Name string `json:"name"`
 }
 
 type Response struct {

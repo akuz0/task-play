@@ -1,7 +1,7 @@
 package model
 
 type MusicEntry struct {
-	Id       string
+	Id       int
 	Name     string
-	Duration string
+	Duration int
 }

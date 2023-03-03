@@ -1,0 +1,27 @@
+
+POST http://localhost:8081/api/v1/playlist/addSong
+Content-Type: application/json
+
+{
+  "songName": "test_33"
+}
+
+###
+
+POST http://localhost:8081/api/v1/playlist/play
+Content-Type: application/json
+
+{
+  "id": 42,
+  "name": "test_31"
+}
+
+###
+
+POST http://localhost:8081/api/v1/playlist/pause
+Content-Type: application/json
+
+{
+"id": 42
+}
+

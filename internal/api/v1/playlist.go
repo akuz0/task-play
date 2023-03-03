@@ -8,24 +8,26 @@ import (
 )
 
 func (a apiServer) AddSong(w http.ResponseWriter, r *http.Request) {
-	//decoder := json.NewDecoder(r.Body)
-	handlerc.Add()
-	//var p playlist.AddSong
-	//err := decoder.Decode(&p)
-	//if err != nil {
-	//	json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
-	//	return
-	//}
-	//res, err := a.playListService.AddSong(r.Context(), p.Id, p.SongName, 0)
-	//if err != nil {
-	//	json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
-	//	return
-	//}
-	//errJson := json.NewEncoder(w).Encode(res)
-	//if errJson != nil {
-	//	json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
-	//	return
-	//}
+	decoder := json.NewDecoder(r.Body)
+	var p playlist.AddSong
+	err := decoder.Decode(&p)
+	if err != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
+	res, err := a.playListService.AddSong(r.Context(), p.Id, p.SongName, 0)
+	if err != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
+	//todo move to service
+	handlerc.Add(p.Id, p.SongName)
+
+	errJson := json.NewEncoder(w).Encode(res)
+	if errJson != nil {
+		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
+		return
+	}
 }
 
 func (a apiServer) NextSong(w http.ResponseWriter, r *http.Request) {
@@ -75,15 +77,17 @@ func (a apiServer) PlayList(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
 	}
-	//enty := model.MusicEntry{Id: string(p.Id), Name: "test1", Duration: "60"}
-	//handlerc.Start1(r.Context(), &enty)
-	handlerc.Start()
 
 	res, err := a.playListService.StartPlayList(r.Context(), p.Id)
 	if err != nil {
 		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})
 		return
 	}
+
+	//todo move to service
+	handlerc.Start(p.Name)
+	res.Name = p.Name
+
 	errJson := json.NewEncoder(w).Encode(res)
 	if errJson != nil {
 		json.NewEncoder(w).Encode(&ResponseError{"Error", 500})

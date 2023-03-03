@@ -17,7 +17,7 @@ func Play(e *model.MusicEntry, ctx context.Context, status chan int) {
 	if p == nil {
 		p = &MPPlayer{}
 	}
-	go p.Play(e.Id, e.Name, e.Duration, ctx, status)
+	//go p.Play(e.Id, e.Name, e.Duration, ctx, status)
 }
 
 func Next(e *model.MusicEntry, ctx context.Context, status chan int) {
@@ -27,7 +27,7 @@ func Next(e *model.MusicEntry, ctx context.Context, status chan int) {
 		p = &MPPlayer{}
 	}
 
-	go p.Play(e.Id, e.Name, e.Duration, ctx, status)
+	//go p.Play(e.Id, e.Name, e.Duration, ctx, status)
 }
 
 func Prev(e *model.MusicEntry, ctx context.Context, status chan int) {
@@ -37,7 +37,7 @@ func Prev(e *model.MusicEntry, ctx context.Context, status chan int) {
 		p = &MPPlayer{}
 	}
 
-	go p.Play(e.Id, e.Name, e.Duration, ctx, status)
+	//	go p.Play(e.Id, e.Name, e.Duration, ctx, status)
 }
 
 func Pause(status chan int) {

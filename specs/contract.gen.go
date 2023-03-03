@@ -15,11 +15,11 @@ type AddSong struct {
 	// Id Идентификатор трека
 	Id int `json:"id"`
 
-	// PlayListId Идентификатор плейлиста
-	PlayListId int `json:"playListId"`
-
 	// SongName Имя трека
 	SongName string `json:"songName"`
+
+	// Status Статус трека
+	Status string `json:"status"`
 }
 
 // Pause defines model for Pause.
@@ -32,6 +32,9 @@ type Pause struct {
 type Play struct {
 	// Id Идентификатор плейлиста
 	Id int `json:"id"`
+
+	// Name Имя трека
+	Name string `json:"name"`
 }
 
 // AddSongJSONRequestBody defines body for AddSong for application/json ContentType.

@@ -104,10 +104,14 @@ components:
       type: object
       required:
         - id
+        - name
       properties:
         id:
           type: integer
           description: Идентификатор плейлиста
+        name:
+          type: string
+          description: Имя трека
     AddSong:
       type: object
       required:

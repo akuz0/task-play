@@ -77,7 +77,7 @@ func (p *MPPlayer) Play(id string, name string, duration string, ctx context.Con
 // Увеличение переменной на единицу.
 // Функция принимает указатель, чтобы
 // изменять оригинальную переменную.
-func inc(mux *sync.Mutex, n *int) {
+func inc2(mux *sync.Mutex, n *int) {
 	// Блокировка мьютекса.
 	mux.Lock()
 	// Снятие блокировки мьютекса.
