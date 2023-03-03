@@ -15,3 +15,6 @@
 Пример работы:
 ![example](https://s9.gifyu.com/images/ezgif.com-video-to-gife2f310a8ab1f320f.gif)
 
+SQL:
+select * from playlist
+![image](https://user-images.githubusercontent.com/91601482/222738813-61c77c70-e608-444d-9d90-4b7cc8c2a485.png)
