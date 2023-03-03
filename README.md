@@ -13,7 +13,11 @@
 
 
 Пример работы:
-![example](https://s9.gifyu.com/images/ezgif.com-video-to-gife2f310a8ab1f320f.gif)
+
+
+https://user-images.githubusercontent.com/91601482/222741415-e017d329-994b-48c3-8f8f-1403af02a14b.mp4
+
+
 
 SQL:
 select * from playlist
